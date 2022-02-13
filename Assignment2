@@ -1,0 +1,281 @@
+/*
+ * Assignment2.cpp
+ *
+ *  Created on: Sep 29, 2020
+ *      Author: Ryan Sobolewski
+ */
+
+#include <iostream>
+#include <stack>
+#include <queue>
+using namespace std;
+
+//used for singly linked lists
+class Node {
+public:
+	int data;
+	Node* next;
+	Node* prev;
+};
+
+//used for number 1
+Node* createNode(int data) {
+	// allocates space
+	Node* node1 = (Node*) malloc(sizeof(Node));
+	node1->data = data;
+	node1->next = NULL;
+	return node1;
+}
+//used for number 2
+Node* createDoubleNode(int data) {
+	// allocates space
+	Node* node1 = (Node*) malloc(sizeof(Node));
+	node1->data = data;
+	node1->next = NULL;
+	node1->prev = NULL;
+	return node1;
+}
+
+void problem1() {
+	Node* head;
+	Node* second;
+	Node* third;
+	Node* insert1;
+	Node* insert2;
+
+	// create 3 new nodes
+	head = createNode(1);
+	second = createNode(2);
+	third = createNode(3);
+	insert1 = createNode(4);
+	insert2 = createNode(5);
+	Node* p = second;
+	//attach link list
+	head->next = second;
+	second->next = third;
+	third->next = NULL;
+	//insert before p
+	head->next = insert1;
+	insert1->next = p;
+	//insert after p
+	p->next = insert2;
+	insert2->next = third;
+	//prints out list
+	while (head != NULL) {
+		cout << head->data << " ";
+		head = head->next;
+	}
+}
+
+template<typename T>
+void problem2(T a) {
+	//creates a new vector of Node*'s
+	vector<Node*> v;
+	//populates each node in the vector from the user
+	cout << "How many elements would you like to enter into the doubly linked list? " << endl;
+	T temp, temp2, sizeOfList;
+	cin >> temp;
+	for (int i = 0; i < temp; i++) {
+		cout << "Enter value for list: ";
+		cin >> temp2;
+		//inserts element into the vector
+		v.push_back(createDoubleNode(temp2));
+	}
+	sizeOfList = v.size();
+	//this for loop links each node together
+	for (int i = 1; i < sizeOfList - 1; i++) {
+		v[i]->prev = v[i - 1];
+		v[i]->next = v[i + 1];
+	}
+	//handles the head and tail
+	v[0]->next = v[1];
+	v[sizeOfList - 1]->prev = v[sizeOfList - 2];
+	//prints original doubly linked list
+	cout << "Original list: ";
+	for (int i = 0; i < sizeOfList; i++) {
+		cout << v[i]->data << ", ";
+	}
+	//has user enter new element value
+	cout << "\nInsert new value to be added: ";
+	cin >> temp2;
+	//inserts new node into the vector
+	v.emplace(v.begin() + sizeOfList / 2, createDoubleNode(temp2));
+	//links the new node that was inserted to the node before and after
+	v[sizeOfList / 2]->prev = v[sizeOfList / 2 - 1];
+	v[sizeOfList / 2]->next = v[sizeOfList / 2 + 1];
+	//links the previous node to the new node instead of the node it was originally attached to
+	v[sizeOfList / 2 - 1]->next = v[sizeOfList / 2];
+	//links the next node to the new node to the new node instead of the original node it was attached to
+	v[sizeOfList / 2 + 1]->prev = v[sizeOfList / 2];
+	//prints new doubly linked list
+	cout << "New list: ";
+	for (int i = 0; i < sizeOfList + 1; i++) {
+		cout << v[i]->data << ", ";
+	}
+}
+
+void problem3() {
+	//Part A
+	//creates 3 stacks and populates stack s to
+	stack<int> s, s2, s3;
+	cout << "Stack s: 7, 6, 5, 4, 3, 2, 1" << endl;
+	for (int i = 1; i < 8; i++) {
+		s.push(i);
+	}
+	//reverses stack to new stack
+	while (!s.empty()) {
+		s2.push(s.top());
+		s.pop();
+	}
+	//reverses stack again to new stack
+	while (!s2.empty()) {
+		s3.push(s2.top());
+		s2.pop();
+	}
+	//reverses 1 more time
+	while (!s3.empty()) {
+		s.push(s3.top());
+		s3.pop();
+	}
+	//prints out reversed stack
+	cout << "Reversed: ";
+	while (!s.empty()) {
+		cout << s.top() << ", ";
+		s.pop();
+	}
+
+	//---------------------------------------------
+	//Part B, creates a queue to reverse
+	//creates a queue and new stack and populates stack
+	queue<int> q;
+	stack<int> s4;
+	cout << "\ns4: 7, 6, 5, 4, 3, 2, 1" << endl;
+	for (int i = 1; i < 8; i++) {
+		s4.push(i);
+	}
+	//reverses ith queue
+	while (!s4.empty()) {
+		q.push(s4.top());
+		s4.pop();
+	}
+	//reverses back to s4
+	while (!q.empty()) {
+		s4.push(q.front());
+		q.pop();
+	}
+	//prints out stack
+	cout << "Queue Reverse: ";
+	while (!s4.empty()) {
+		cout << s4.top() << ", ";
+		s4.pop();
+	}
+}
+
+void problem4() {
+	//Part A
+	//creats 2 stacks and a queue and populates the first stack
+	stack<int> s, s2;
+	queue<int> q;
+	cout << "Stack s: 7, 6, 5, 4, 3, 2, 1" << endl;
+	for (int i = 1; i < 8; i++) {
+		s.push(i);
+	}
+	//transfers elements to queue
+	while (!s.empty()) {
+		q.push(s.top());
+		s.pop();
+	}
+	//transfers queue elements to s2 in the same order as s
+	cout << "S2: ";
+	while (!q.empty()) {
+		s2.push(q.front());
+		q.pop();
+		cout << s2.top() << ", ";
+	}
+	//----------------------------------------
+	//Part B
+	//creates 2 new stacks and populates s3
+	stack<int> s3, s4;
+	cout << "\nS3: 7, 6, 5, 4, 3, 2, 1" << endl;
+	for (int i = 1; i < 8; i++) {
+		s3.push(i);
+	}
+	//puts the elements in s4 as the same order as s3
+	s3.swap(s4);
+	//prints s4
+	cout << "S4: ";
+	while (!s4.empty()) {
+		cout << s4.top() << ", ";
+		s4.pop();
+	}
+}
+
+void problem5() {
+	//creates two stacks to hold the variables and another stack to hold the sum
+	stack<int> s, s2, sum;
+	//populates the stacks
+	s.push(4);
+	s.push(8);
+	s.push(7);
+	s.push(3);
+	s.push(2);
+	s2.push(5);
+	s2.push(1);
+	s2.push(8);
+	cout << "48732 + 518 = ";
+	//creates two variables to aid in addition
+	int temp = 0;
+	int carry = 0;
+	//this for loop runs through the different elements in the stacks to add them
+	for (int i = 0; i < s.size(); i++) {
+		//sets the value of temp to the top two digits in the stack
+		temp = s.top() + s2.top();
+		//this if else handles the case where there is a carry in the addititon
+		//example 7+5=12 but when add 7+5=2 and you carry the 1 to the next digit
+		if (temp >= 10 && s.size() > 1) {
+			temp -= 10;
+			sum.push(temp + carry);
+			carry = 1;
+		}		//this else handles the case where there is no need for a carry
+		else {
+			sum.push(temp + carry);
+			carry = 0;
+		}
+		s.pop();
+		s2.pop();
+	}
+	//pushes unused values from s2 into sum
+	//basically adding 0 to each unless there is a leftover carry
+	while (s.empty() && !s2.empty()) {
+		sum.push(s2.top() + carry);
+		carry = 0;
+		s2.pop();
+	}
+	//pushes unused values from s into sum
+	//basically adding 0 to each unless there is a leftover carry
+	while (!s.empty() && s2.empty()) {
+		sum.push(s.top() + carry);
+		carry = 0;
+		s.pop();
+	}
+	//prints out sum stack
+	while (!sum.empty()) {
+		cout << sum.top() << ", ";
+		sum.pop();
+	}
+}
+
+int main() {
+
+	cout << "#1: " << endl;
+	problem1();
+	cout << "\n\n#2: " << endl;
+	problem2(0);
+	cout << "\n\n#3: " << endl;
+	problem3();
+	cout << "\n\n#4: " << endl;
+	problem4();
+	cout << "\n\n#5: " << endl;
+	problem5();
+	return 0;
+}
